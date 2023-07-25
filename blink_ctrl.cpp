@@ -118,7 +118,7 @@ void CBlinkCtrl::task()
         p_timeout = (blinking) ? &timeout : nullptr;
 
         // Wait for a command to arrive.  If we time out, it means we need to blink
-        if (select(fd+1, &rfds, NULL, NULL, p_timeout) == 0)
+        if (select(fd+1, &rfds, nullptr, nullptr, p_timeout) == 0)
         {
             blink_now();
             continue;
