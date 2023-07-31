@@ -71,7 +71,6 @@ bool CGpioCtrl::start(const char* chip_name, unsigned int gpio_num, const char* 
         fprintf(stderr, "gpiod_line_request_output() failed for GPIO %d\n:", gpio_num);
         return false;
     }
-
     
     // Create the pipe that the threads will use to communicate
     rc = pipe2(m_pipe, O_CLOEXEC);
@@ -132,7 +131,7 @@ void CGpioCtrl::task()
         if (select(fd+1, &rfds, nullptr, nullptr, p_timeout) == 0)
         {
             gpio_state = 1-gpio_state;
-            gpiod_line_set_value(m_line, gpio_state);
+            if (m_line) gpiod_line_set_value(m_line, gpio_state);
             continue;
         }
 
@@ -143,7 +142,7 @@ void CGpioCtrl::task()
         gpio_state = msg.state;
         
         // Set the physical output line to match this new state
-        gpiod_line_set_value(m_line, gpio_state);
+        if (m_line) gpiod_line_set_value(m_line, gpio_state);
 
         // Is this GPIO blinking?
         blinking = (msg.period_ms != 0);
