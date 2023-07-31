@@ -1,13 +1,24 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#include "gpio_ctrl.h"
+
 #include "blink_ctrl.h"
 CBlinkCtrl ctrl;
 
+CGpioCtrl gpio;
 
 int main()
 {
     ctrl.start(500);
+    gpio.start("/dev/device", 3, "data");
+
+    gpio.set(true, 300);
+
+    sleep(40000);
+    gpio.set(false);
+    exit(1);
+
 
     printf("Starting...\n");
     ctrl.start_blink(1);
